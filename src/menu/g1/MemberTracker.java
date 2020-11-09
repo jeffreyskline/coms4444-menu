@@ -1,11 +1,12 @@
 package menu.g1;
 
 import menu.sim.FamilyMember;
+import menu.sim.Food;
 import menu.sim.MealHistory;
 
 public class MemberTracker implements Comparable<MemberTracker> {
     private FamilyMember member;
-    private PreferenceTracker prefTracker;
+    public PreferenceTracker prefTracker;
     private Double avgSatisfaction;
     private Double weight;
 
@@ -20,6 +21,10 @@ public class MemberTracker implements Comparable<MemberTracker> {
         updateAvgSatisfation(week, mealHistory);
         updateWeight(scale);
         updatePrefTracker(week, mealHistory);
+    }
+
+    public Double getWeightedPreference(Food.FoodType foodType, int day) {
+        return prefTracker.satisfactionsForWeek.get(foodType)[day] * weight;
     }
 
     public Double getAvgSatisfaction() {
@@ -37,10 +42,10 @@ public class MemberTracker implements Comparable<MemberTracker> {
 
     private void updateWeight(Double scale) {
         if (avgSatisfaction == 0) {
-            weight = scale/0.00001;
+            weight = scale/0.0000001;
         }
         else {
-            weight = scale / avgSatisfaction;
+            weight = scale/avgSatisfaction;
         }
     }
 
@@ -52,9 +57,10 @@ public class MemberTracker implements Comparable<MemberTracker> {
         prefTracker.update(week, mealHistory);
     }
 
-    public PreferenceTracker getPrefTrackerCopy() {
-        return new PreferenceTracker(prefTracker);
-    }
+    /*public PreferenceTracker getPrefTrackerCopy() {
+        //return new PreferenceTracker(prefTracker);
+        return prefTracker;
+    }*/
 
     @Override
     public int compareTo(MemberTracker otherMember) {

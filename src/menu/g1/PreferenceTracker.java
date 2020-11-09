@@ -41,6 +41,11 @@ public class PreferenceTracker implements Cloneable {
         }
     }
 
+    public void update(Integer week, MealHistory mealHistory) {
+        updateLastServed(week, mealHistory);
+        generateSatisfactionsForWeek();
+    }
+
     private void updateLastServed(Integer week, MealHistory mealHistory) {
         if (week > 1) {
             for (Food.FoodType lunch: Food.getFoodTypes(Food.MealType.LUNCH)) {
@@ -92,8 +97,19 @@ public class PreferenceTracker implements Cloneable {
         }
     }
 
-    public void update(Integer week, MealHistory mealHistory) {
-        updateLastServed(week, mealHistory);
+    public void addTempFood(Food.FoodType food, int day) {
+        if (food != null) {
+            Double[] satForWeek = satisfactionsForWeek.get(food);
+            Double daysAgo = 1.0;
+            Double pref = member.getFoodPreference(food);
+            for (int i = day + 1; i < satForWeek.length; i++) {
+                satForWeek[i] = pref * (daysAgo/(daysAgo + 1.0));
+                daysAgo += 1.0;
+            }
+        }
+    }
+
+    public void reset() {
         generateSatisfactionsForWeek();
     }
 
